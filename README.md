@@ -7,3 +7,14 @@ belongs to [Middlebury - CS 1003](https://www.cs.middlebury.edu/~candrews/classe
 ## Example
 
 ![Random Maze-like art](img/random-maze.png)
+
+## TODO
+
+- [ ] Add side panel with configuration options:
+    - [ ] Number of rows
+    - [ ] Number of columns
+    - [ ] Maze size
+    - [ ] Background color
+    - [ ] Line color
+    - [ ] Export as PNG
+- [ ] Ability to switch wall direction on click

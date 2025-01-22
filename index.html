@@ -8,15 +8,43 @@
 <body>
     <div class="content" style="display:flex;flex-direction:row;width:100vw;justify-content:center;gap:3em">
         <canvas id="maze-canvas" width="800" height="600"></canvas>
-        <div style="background-color:white;position:fixed;right:0;top:100px;border-radius:5px;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;gap:0.25em;">
-            <h3>Configuration</h3>
-            <label for="width">Width (between 10 and 1600):</label>
+        <div style="background-color:white;position:fixed;right:10px;top:100px;border-radius:5px;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;gap:0.25em;">
+            <h2>Configuration</h2>
+            <form>
+                <input type="color" id="backgroundColor" name="backgroundColor" value="#000000">
+                <label for="backgroundColor">Background color</label>
+            </form>
+            <br>
+            <form>
+                <input type="color" id="lineColor" name="lineColor" value="#ffffff">
+                <label for="lineColor">Line color</label>
+            </form>
+            <br>
+            <label for="width">Width (between 10 and 1600)</label>
             <input type="range" id="width" name="width" min="100" max="1600" step="100" value="800">
-            <label for="height">Height (between 10 and 900):</label>
+            <br>
+            <label for="height">Height (between 10 and 900)</label>
             <input type="range" id="height" name="height" min="100" max="900" step="100" value="600">
-            <label for="cell-size">Cell size (between 10 and 100):</label>
-            <input type="range" id="cell-size" name="cell-size" min="10" max="100" step="10" value="40">
+            <br>
+            <label for="cellSize">Cell size</label>
+            <input type="range" id="cellSize" name="cellSize" min="10" max="100" step="10" value="50">
+            <br>
+            <label for="lineWidth">Line width (between 2 and 20)</label>
+            <input type="range" id="lineWidth" name="lineWidth" min="2" max="20" step="2" value="2">
+            <br>
+            <form>
+                <input type="checkbox" id="fillSquares" name="fill-squares" value="fillSquares">
+                <label for="fillSquares"> Fill squares with color</label><br>
+            </form>
+            <form>
+                <input type="color" id="squareFillColor" name="squareFillColor" value="#ffdd00">
+                <label for="squareFillColor">Fill squares color</label>
+            </form>
+            <br>
+            <button id="regenerateArtButton">Regenerate art</button>
             <button id="downloadImgButton">Download as PNG</button>
+            <br>
+            <button id="restoreDefaultsButton">Restore defaults</button>
         </div>
     </div>
     <script src="main.js"></script>

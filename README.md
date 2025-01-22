@@ -10,11 +10,13 @@ belongs to [Middlebury - CS 1003](https://www.cs.middlebury.edu/~candrews/classe
 
 ## TODO
 
-- [ ] Add side panel with configuration options:
-    - [ ] Number of rows
-    - [ ] Number of columns
-    - [ ] Maze size
-    - [ ] Background color
-    - [ ] Line color
-    - [ ] Export as PNG
+- [x] Add side panel with configuration options:
+    - [x] Number of rows
+    - [x] Number of columns
+    - [x] Maze size
+    - [x] Background color
+    - [x] Line color
+    - [x] Export as PNG
+- [x] Store configuration in local storage
+- [x] Reset defaults button
 - [ ] Ability to switch wall direction on click

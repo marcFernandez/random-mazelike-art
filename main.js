@@ -1,9 +1,42 @@
-// Function to download the canvas as PNG
 const downloadCanvas = () => {
     const link = document.createElement('a');
     link.download = 'random-mazy-pattern.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
+}
+
+const drawDiag = (ctx, i, j, cellSize, dir) => {
+    //return drawStraight(ctx, i, j, cellSize, dir);
+    if (dir === -1) {
+        ctx.moveTo(j * cellSize, i * cellSize);
+        ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
+        ctx.stroke();
+    } else {
+        ctx.moveTo(j * cellSize, i * cellSize + cellSize);
+        ctx.lineTo(j * cellSize + cellSize, i * cellSize);
+        ctx.stroke();
+    }
+}
+
+const drawStraight = (ctx, i, j, cellSize, dir) => {
+    const coin = Math.random();
+    if (coin < 0.25) {
+        ctx.moveTo(j * cellSize, i * cellSize);
+        ctx.lineTo(j * cellSize + cellSize, i * cellSize);
+        ctx.stroke();
+    } else if (coin < 0.5) {
+        ctx.moveTo(j * cellSize, i * cellSize);
+        ctx.lineTo(j * cellSize, i * cellSize + cellSize);
+        ctx.stroke();
+    } else if (coin < 0.75) {
+        ctx.moveTo(j * cellSize, i * cellSize + cellSize);
+        ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
+        ctx.stroke();
+    } else {
+        ctx.moveTo(j * cellSize + cellSize, i * cellSize);
+        ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
+        ctx.stroke();
+    }
 }
 
 const CONFIG_KEY = "random-mazy-art-config";
@@ -116,15 +149,10 @@ const regenerateMaze = () => {
             ctx.beginPath();
             if (Math.random() < 0.5) {
                 grid[i][j] = -1;
-                ctx.moveTo(j * cellSize, i * cellSize);
-                ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
-                ctx.stroke();
             } else {
                 grid[i][j] = 1;
-                ctx.moveTo(j * cellSize, i * cellSize + cellSize);
-                ctx.lineTo(j * cellSize + cellSize, i * cellSize);
-                ctx.stroke();
             }
+            drawDiag(ctx, i, j, cellSize, grid[i][j]);
         }
     }
 
@@ -162,15 +190,7 @@ const generateMaze = () => {
             ctx.strokeStyle = lineColorEl.value;
             ctx.lineWidth = parseInt(lineWidthEl.value);
             ctx.beginPath();
-            if (grid[i][j] === -1) {
-                ctx.moveTo(j * cellSize, i * cellSize);
-                ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
-                ctx.stroke();
-            } else {
-                ctx.moveTo(j * cellSize, i * cellSize + cellSize);
-                ctx.lineTo(j * cellSize + cellSize, i * cellSize);
-                ctx.stroke();
-            }
+            drawDiag(ctx, i, j, cellSize, grid[i][j]);
         }
     }
 

@@ -5,38 +5,55 @@ const downloadCanvas = () => {
     link.click();
 }
 
-const drawDiag = (ctx, i, j, cellSize, dir) => {
-    //return drawStraight(ctx, i, j, cellSize, dir);
-    if (dir === -1) {
-        ctx.moveTo(j * cellSize, i * cellSize);
-        ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
-        ctx.stroke();
-    } else {
-        ctx.moveTo(j * cellSize, i * cellSize + cellSize);
-        ctx.lineTo(j * cellSize + cellSize, i * cellSize);
-        ctx.stroke();
+const draw = (ctx, i, j, cellSize, dir) => {
+    if (lineTypeEl.value === "Diagonal") {
+        return drawDiag(ctx, i, j, cellSize, dir);
+    } else if (lineTypeEl.value === "Side") {
+        return drawSide(ctx, i, j, cellSize, dir);
+    } else if (lineTypeEl.value === "Straight") {
+        console.log("Straight")
+        return drawStraight(ctx, i, j, cellSize, dir);
     }
 }
 
+const drawDiag = (ctx, i, j, cellSize, dir) => {
+    if (dir === -1) {
+        ctx.moveTo(j * cellSize, i * cellSize);
+        ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
+    } else {
+        ctx.moveTo(j * cellSize, i * cellSize + cellSize);
+        ctx.lineTo(j * cellSize + cellSize, i * cellSize);
+    }
+    ctx.stroke();
+}
+
 const drawStraight = (ctx, i, j, cellSize, dir) => {
+    if (dir === -1) {
+        ctx.moveTo(j * cellSize + cellSize / 2, i * cellSize);
+        ctx.lineTo(j * cellSize + cellSize / 2, i * cellSize + cellSize);
+    } else {
+        ctx.moveTo(j * cellSize, i * cellSize + cellSize / 2);
+        ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize / 2);
+    }
+    ctx.stroke();
+}
+
+const drawSide = (ctx, i, j, cellSize, dir) => {
     const coin = Math.random();
     if (coin < 0.25) {
         ctx.moveTo(j * cellSize, i * cellSize);
         ctx.lineTo(j * cellSize + cellSize, i * cellSize);
-        ctx.stroke();
     } else if (coin < 0.5) {
         ctx.moveTo(j * cellSize, i * cellSize);
         ctx.lineTo(j * cellSize, i * cellSize + cellSize);
-        ctx.stroke();
     } else if (coin < 0.75) {
         ctx.moveTo(j * cellSize, i * cellSize + cellSize);
         ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
-        ctx.stroke();
     } else {
         ctx.moveTo(j * cellSize + cellSize, i * cellSize);
         ctx.lineTo(j * cellSize + cellSize, i * cellSize + cellSize);
-        ctx.stroke();
     }
+    ctx.stroke();
 }
 
 const CONFIG_KEY = "random-mazy-art-config";
@@ -57,6 +74,8 @@ var fillSquaresEl = document.getElementById("fillSquares");
 var squareFillColorEl = document.getElementById("squareFillColor");
 /* @type {HTMLInputElement} */
 var lineWidthEl = document.getElementById("lineWidth");
+/* @type {HTMLInputElement} */
+var lineTypeEl = document.getElementById("lineType");
 
 /* @type {HTMLCanvasElement} */
 var canvas = document.getElementById('maze-canvas');
@@ -72,6 +91,7 @@ const storeConfig = () => {
     const fillSquares = fillSquaresEl.checked;
     const lineColor = lineColorEl.value;
     const backgroundColor = backgroundColorEl.value;
+    const lineType = lineTypeEl.value;
     const config = {
         width,
         height,
@@ -81,6 +101,7 @@ const storeConfig = () => {
         fillSquares,
         lineColor,
         backgroundColor,
+        lineType
     }
     localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
 }
@@ -96,6 +117,7 @@ const restoreConfig = () => {
         fillSquaresEl.checked = config.fillSquares;
         lineColorEl.value = config.lineColor;
         backgroundColorEl.value = config.backgroundColor;
+        lineTypeEl.value = config.lineType
     }
 }
 restoreConfig();
@@ -109,6 +131,7 @@ const restoreDefaults = () => {
     fillSquaresEl.checked = false;
     lineColorEl.value = "#ffffff";
     backgroundColorEl.value = "#000000";
+    lineTypeEl.value = "Diagonal";
     storeConfig();
     regenerateMaze();
 }
@@ -152,11 +175,11 @@ const regenerateMaze = () => {
             } else {
                 grid[i][j] = 1;
             }
-            drawDiag(ctx, i, j, cellSize, grid[i][j]);
+            draw(ctx, i, j, cellSize, grid[i][j]);
         }
     }
 
-    if (fillSquaresEl.checked) {
+    if (shouldFillSquares()) {
         for (let i = 0; i * cellSize < height; i++) {
             for (let j = 0; j * cellSize < width; j++) {
                 if (grid[i][j] === 1 && grid[i][j + 1] === -1 && grid[i + 1][j] === -1 && grid[i + 1][j + 1] === 1) {
@@ -190,11 +213,11 @@ const generateMaze = () => {
             ctx.strokeStyle = lineColorEl.value;
             ctx.lineWidth = parseInt(lineWidthEl.value);
             ctx.beginPath();
-            drawDiag(ctx, i, j, cellSize, grid[i][j]);
+            draw(ctx, i, j, cellSize, grid[i][j]);
         }
     }
 
-    if (fillSquaresEl.checked) {
+    if (shouldFillSquares()) {
         for (let i = 0; i * cellSize < height; i++) {
             for (let j = 0; j * cellSize < width; j++) {
                 if (grid[i][j] === 1 && grid[i][j + 1] === -1 && grid[i + 1][j] === -1 && grid[i + 1][j + 1] === 1) {
@@ -211,6 +234,10 @@ const generateMaze = () => {
             }
         }
     }
+}
+
+const shouldFillSquares = () => {
+    return fillSquaresEl.checked && lineTypeEl.value === "Diagonal"
 }
 
 regenerateMaze(widthEl.value, heightEl.value, cellSizeEl.value);
@@ -256,6 +283,16 @@ lineWidthEl.addEventListener('input', () => {
     generateMaze();
     storeConfig();
 });
+
+lineTypeEl.addEventListener('input', () => {
+    if (lineTypeEl.value !== "Diagonal") {
+        fillSquaresEl.disabled = true;
+    } else {
+        fillSquaresEl.disabled = false;
+    }
+    regenerateMaze();
+    storeConfig();
+})
 
 const downloadImgButton = document.getElementById("downloadImgButton");
 downloadImgButton.onclick = downloadCanvas;
